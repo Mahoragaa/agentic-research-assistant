@@ -1,0 +1,19 @@
+version: "3.9"
+
+services:
+  research-assistant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: agentic-research-assistant
+    ports:
+      - "7860:7860"
+    env_file:
+      - .env
+    volumes:
+      # Persist ChromaDB data across container restarts
+      - ./data:/app/data
+    restart: unless-stopped
+    environment:
+      - PYTHONUNBUFFERED=1
+      - CHROMA_PERSIST_DIR=/app/data/chroma_db
