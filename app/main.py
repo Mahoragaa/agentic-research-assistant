@@ -36,15 +36,15 @@ def main():
     logger.info("  Powered by Gemini 1.5 Flash • LangGraph • ChromaDB")
     logger.info("=" * 60)
 
-    app = create_app()
+    app, launch_extras = create_app()
 
     app.queue()  # Enable queuing for streaming
     app.launch(
         server_name="0.0.0.0",
         server_port=7860,
         share=False,
-        show_api=False,
         favicon_path=None,
+        **launch_extras,
     )
 
 

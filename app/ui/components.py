@@ -328,12 +328,20 @@ async def chat_respond(message, chat_history, collection_name):
 # ── Build the Gradio App ──────────────────────────────────────────────
 
 
-def create_app() -> gr.Blocks:
-    """Build and return the Gradio Blocks application."""
+def create_app() -> tuple[gr.Blocks, dict]:
+    """Build and return the Gradio Blocks application and launch kwargs.
+
+    Returns:
+        A tuple of (app, launch_kwargs) where launch_kwargs contains
+        theme and css for Gradio 6.x compatibility.
+    """
+    # In Gradio 6.x, theme/css moved from Blocks() to launch()
+    launch_extras = {
+        "theme": THEME,
+        "css": CUSTOM_CSS,
+    }
 
     with gr.Blocks(
-        theme=THEME,
-        css=CUSTOM_CSS,
         title="Agentic Research Assistant",
         analytics_enabled=False,
     ) as app:
@@ -428,10 +436,8 @@ def create_app() -> gr.Blocks:
                 gr.Markdown("### 💬 Ask Your Research Questions")
 
                 chatbot = gr.Chatbot(
-                    type="messages",
                     label="Research Chat",
                     elem_id="chatbot",
-                    show_copy_button=True,
                     avatar_images=(None, "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690b6.svg"),
                     placeholder=(
                         "Select a collection and ask a question.\n\n"
@@ -525,4 +531,4 @@ def create_app() -> gr.Blocks:
             outputs=[collection_dropdown, collection_status],
         )
 
-    return app
+    return app, launch_extras
