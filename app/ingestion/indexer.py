@@ -132,8 +132,12 @@ def delete_collection(
     try:
         client.delete_collection(collection_name)
         return True
-    except ValueError:
-        return False
+    except (ValueError, Exception) as e:
+        # ChromaDB may raise NotFoundError (subclass of Exception)
+        # or ValueError depending on version
+        if "NotFoundError" in type(e).__name__ or isinstance(e, ValueError):
+            return False
+        raise
 
 
 def get_collection_stats(
